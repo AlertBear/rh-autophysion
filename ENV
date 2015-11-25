@@ -12,8 +12,8 @@ export RHEVHInitPasswd=redhat
 export RHEVHNewPasswd=qwerasdf1234
 
 # Necessary kernel patameter
-# Password:entryption ${RHEVHInitPasswd}:RFC5V3galFTvw
-export RHEVHKernelBasedArg="rootpw=RFC5V3galFTvw ssh_pwauth=1 firstboot"
+# Password:entryption ${RHEVHInitPasswd}:LSoVK5ZN44FAk
+export RHEVHKernelBasedArg="rootpw=LSoVK5ZN44FAk ssh_pwauth=1 firstboot"
 
 # Send email
 export MAILTO=cwu@redhat.com

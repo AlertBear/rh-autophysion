@@ -1,6 +1,4 @@
 #!/bin/bash
-#set -x
-#set -n
 
 # Environment parameters
 . ENV
@@ -509,6 +507,15 @@ HOSTMgtPowerReset="`cat ${PHYMACHINE} | grep -v "#" | grep -w "${HOSTAlias}" | a
 HOSTMgtPowerResetExpect="`cat ${PHYMACHINE} | grep -v "#" | grep -w "${HOSTAlias}" | awk -F':' '{ print $12 }'`"
 HOSTMgtPater="`cat ${PHYMACHINE} | grep -v "#" | grep -w "${HOSTAlias}" | awk -F':' '{ print $14 }'`"
 
+
+#cat ${TESTCASES} | grep -v "#" | grep -w "${HOSTAlias}" | egrep "${testcasetorun}" | while read testcase; do
+testcasesfromfile=`cat ${TESTCASES} | grep -v "#" | grep -w "${HOSTAlias}" | egrep "${testcasetorun}" | awk -F'?' '{ print $1"?"$2"?"$3 }'`
+testcasesnum=`printf "${testcasesfromfile}\n" | sed '/^$/d' | wc -l`
+if [ ${testcasesnum} -eq 0 ]; then
+	echo "ERROR: None test case selected, please check option or testcase.conf file, abort testing."
+	exit 1
+fi
+
 trap "cobbler_ctl remove; keep_test_machine unlock; exit 1" 2
 echo "---------------------------Testing start on ${HOSTAlias}-----------------------------------"
 echo -e "INFO: Locking the test server ...\c"
@@ -518,11 +525,15 @@ echo
 echo
 echo
 
-cat ${TESTCASES} | grep -v "#" | grep -w "${HOSTAlias}" | egrep "${testcasetorun}" | while read testcase; do
-	CASEID=`echo ${testcase} | awk -F? '{ print $1 }'`
-	CASEPolarionID=`echo ${testcase} | awk -F? '{ print $3 }'`
-	CASEKernelArgs="`echo ${testcase} | awk -F? '{ print $4 }'`"
-	CASERunScript="`echo ${testcase} | awk -F? '{ print $6 }'`"
+(( testcasesnum = testcasesnum + 1 ))
+lincase=1
+while [ ${lincase} -lt ${testcasesnum} ]; do
+	targetlincase=`printf "${testcasesfromfile}\n" | sed -n ${lincase}p`
+	testcase=`cat ${TESTCASES} | grep ${targetlincase} | uniq`
+	CASEID=`echo ${testcase} | awk -F'?' '{ print $1 }'`
+	CASEPolarionID=`echo ${testcase} | awk -F'?' '{ print $3 }'`
+	CASEKernelArgs="`echo ${testcase} | awk -F'?' '{ print $4 }'`"
+	CASERunScript="`echo ${testcase} | awk -F'?' '{ print $6 }'`"
 	RHEVHKernelArg="${CASEKernelArgs} ${RHEVHKernelBasedArg}"
 	#echo ${CASEID}
 	#echo ${CASEPolarionID}
@@ -707,6 +718,8 @@ cat ${TESTCASES} | grep -v "#" | grep -w "${HOSTAlias}" | egrep "${testcasetorun
 	echo
 	echo
 	echo
+	(( lincase = lincase + 1))
+	sleep 90
 done
 echo -e "INFO: Unlocking the test server ...\c"
 keep_test_machine 'unlock'
