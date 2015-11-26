@@ -5,11 +5,11 @@
 
  mastserver.py:
 
-	This file need to deploy on the control server, used to control the test
+	This file need to be deployed on the control server and used to control the test
 	server usage. During the testing, the program first need to check with
 	control server whether server is using by the other user, if not, then
-	notice the control to lock the test machine, and run testing. After finished 
-	the testing, the program notice the control server to unlock the test server.
+	notice the control server to lock the test machine and run testing. After finishing 
+	the testing, the program notices the control server to unlock the test server.
 
  autophysion.sh:
 
@@ -45,8 +45,8 @@
 
 # Usage:
 
- 1. First of all, you need make surt that the mastserver.py already deploy and
-	running on the control server, if need you need deploy and running it.
+ 1. First of all, you need make sure that the mastserver.py is already deployed and is
+	running on the control server, if not, you need to deploy and running it
 
 	Run:
 		python2.7 mastserver.py
@@ -58,7 +58,7 @@
 
 	$ sudo ./autophysion.sh -h
 
-	Usage : ./autophysion.sh [OPTION]... 
+	Usage : ./autophysion.sh [OPTION]...
 		-a Host Alias		Host Alias for provision, -l to show details.
 		-c 			List all the test case for target machine.
 		-d URL			Deploy target RHEV-H profile on cobbler server.
